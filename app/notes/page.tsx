@@ -1,62 +1,22 @@
-'use client';
-import { useState } from 'react';
-import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { fetchNotes } from '@/lib/api';
-import { useDebouncedCallback } from 'use-debounce';
-import SearchBox from '@/components/SearchBox/SearchBox';
-import Pagination from '@/components/Pagination/Pagination';
-import Modal from '@/components/Modal/Modal';
-import NoteForm from '@/components/NoteForm/NoteForm';
-import NoteList from '@/components/NoteList/NoteList';
-import css from '@/components/NotesPage/NotesPage.module.css';
+import NotesClient from './Notes.client';
 
-export default function App() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [search, setSearch] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const { data, isSuccess } = useQuery({
-    queryKey: ['notes', search, currentPage],
-    queryFn: () => fetchNotes(search, currentPage),
-    placeholderData: keepPreviousData,
-    throwOnError: true,
-  });
-
-  const handleSearch = useDebouncedCallback((newQuery: string) => {
-    setSearch(newQuery.trim());
-    setCurrentPage(1);
-  }, 1000);
-
-  const openModal = () => {
-    setIsModalOpen(true);
+interface NotePageProps {
+  searchParams: {
+    search: string;
+    page: number;
   };
+}
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+const NotesPage = async ({ searchParams }: NotePageProps) => {
+  const search = searchParams.search ?? '';
+  const page = Number(searchParams.page ?? 1);
+
+  const data = await fetchNotes(search, page);
 
   return (
-    <div className={css.app}>
-      <header className={css.toolbar}>
-        <SearchBox onSearch={handleSearch} />
-        {isSuccess && data.totalPages > 1 && (
-          <Pagination
-            totalPages={data.totalPages}
-            page={currentPage}
-            setPage={setCurrentPage}
-          />
-        )}
-        <button className={css.button} onClick={openModal}>
-          Create note +
-        </button>
-        {isModalOpen && (
-          <Modal onClose={closeModal}>
-            <NoteForm onClose={closeModal} />
-          </Modal>
-        )}
-      </header>
-      {data && data.notes.length > 0 && <NoteList notes={data.notes} />}
-    </div>
+    <NotesClient initialSearch={search} initialPage={page} initialData={data} />
   );
-}
+};
+
+export default NotesPage;
