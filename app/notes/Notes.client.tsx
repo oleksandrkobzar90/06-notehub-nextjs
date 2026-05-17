@@ -9,19 +9,14 @@ import Modal from '@/components/Modal/Modal';
 import NoteForm from '@/components/NoteForm/NoteForm';
 import NoteList from '@/components/NoteList/NoteList';
 import css from '@/components/NotesPage/NotesPage.module.css';
-import { NotesResponse } from '@/types/note';
+import { Note } from '@/types/note';
 
-type NotesClientProps = {
+interface NotesClientProps {
   initialSearch: string;
   initialPage: number;
-  initialData: NotesResponse;
-};
+}
 
-const NotesClient = ({
-  initialSearch,
-  initialPage,
-  initialData,
-}: NotesClientProps) => {
+const NotesClient = ({ initialSearch, initialPage }: NotesClientProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const [search, setSearch] = useState(initialSearch);
@@ -31,7 +26,6 @@ const NotesClient = ({
     queryKey: ['notes', search, currentPage],
     queryFn: () => fetchNotes(search, currentPage),
     placeholderData: keepPreviousData,
-    initialData,
     throwOnError: true,
   });
 
