@@ -9,7 +9,6 @@ import Modal from '@/components/Modal/Modal';
 import NoteForm from '@/components/NoteForm/NoteForm';
 import NoteList from '@/components/NoteList/NoteList';
 import css from '@/components/NotesPage/NotesPage.module.css';
-import { Note } from '@/types/note';
 
 interface NotesClientProps {
   initialSearch: string;
