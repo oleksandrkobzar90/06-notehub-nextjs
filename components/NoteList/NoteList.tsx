@@ -22,13 +22,6 @@ const NoteList = ({ notes }: NoteListProps) => {
     mutationDelete.mutate(id);
   };
 
-  // const { data, isSuccess } = useQuery({
-  //   queryKey: ['notes', search, currentPage],
-  //   queryFn: () => fetchNotes(search, currentPage),
-  //   placeholderData: keepPreviousData,
-  //   throwOnError: true,
-  // });
-
   return (
     <ul className={css.list}>
       {notes.map(note => (
